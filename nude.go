@@ -3,7 +3,9 @@ package nude
 import (
 	"fmt"
 	"image"
+	"io"
 	"math"
+	"net/http"
 	"path/filepath"
 	"sort"
 )
@@ -27,8 +29,32 @@ func IsFileNude(imageFilePath string) (bool, error) {
 }
 
 func IsImageNude(img image.Image) (bool, error) {
-	d:= NewDetector(img)
+	d := NewDetector(img)
 	return d.Parse()
+}
+
+func IsURLNude(link string) (bool, error) {
+	res, err := http.Get(link)
+	if err != nil {
+		return false, err
+	}
+
+	img, _, err := image.Decode(res.Body)
+	if err != nil {
+		return false, err
+	}
+
+	return IsImageNude(img)
+}
+
+// accepts a file, a url response etc... returns true if nudity is detected
+func IsImageNudeFromReader(r io.Reader) (bool, error) {
+	img, _, err := image.Decode(r)
+	if err != nil {
+		return false, err
+	}
+
+	return IsImageNude(img)
 }
 
 type Detector struct {
@@ -47,7 +73,7 @@ type Detector struct {
 }
 
 func NewDetector(img image.Image) *Detector {
-	d := &Detector{image: img }
+	d := &Detector{image: img}
 	return d
 }
 

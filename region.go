@@ -18,14 +18,15 @@ type Pixel struct {
 type Region []*Pixel
 
 // TODO: optimize
-//func (r Region) isSkin(x, y int) bool {
-//	for _, pixel := range r {
-//		if pixel.isSkin && pixel.X == x && pixel.Y == y {
-//			return true
+//
+//	func (r Region) isSkin(x, y int) bool {
+//		for _, pixel := range r {
+//			if pixel.isSkin && pixel.X == x && pixel.Y == y {
+//				return true
+//			}
 //		}
+//		return false
 //	}
-//	return false
-//}
 
 func (r Region) leftMost() *Pixel {
 	minX := math.MaxInt32

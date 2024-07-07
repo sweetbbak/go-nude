@@ -1,7 +1,6 @@
 package main
 
 import (
-	"../../"
 	"fmt"
 	"image"
 	"image/color"
@@ -10,6 +9,8 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/sweetbbak/go-nude"
 )
 
 func drawImageAndRegions(imagePath string, regions nude.Regions) {
@@ -20,7 +21,8 @@ func drawImageAndRegions(imagePath string, regions nude.Regions) {
 
 	img, err := nude.DecodeImage(path)
 	dstImg := image.NewRGBA(img.Bounds())
-	draw.Draw(dstImg, img.Bounds(), img, image.ZP, draw.Src)
+	// draw.Draw(dstImg, img.Bounds(), img, image.ZP, draw.Src)
+	draw.Draw(dstImg, img.Bounds(), img, image.Point{}, draw.Src)
 
 	for i := 0; i < len(regions); i++ {
 		minX, minY := 1000000, 1000000
@@ -43,7 +45,8 @@ func drawImageAndRegions(imagePath string, regions nude.Regions) {
 		}
 		m := image.NewRGBA(image.Rect(minX, minY, maxX, maxY))
 		blue := color.RGBA{0, 0, 255, 255}
-		draw.Draw(dstImg, m.Bounds(), &image.Uniform{blue}, image.ZP, draw.Src)
+		// draw.Draw(dstImg, m.Bounds(), &image.Uniform{blue}, image.ZP, draw.Src)
+		draw.Draw(dstImg, m.Bounds(), &image.Uniform{blue}, image.Point{}, draw.Src)
 	}
 
 	path, err = filepath.Abs("result.jpg")
@@ -66,12 +69,24 @@ func main() {
 	//imagePath := "../images/damita2.jpg"
 	//imagePath := "../images/test2.jpg"
 	//imagePath := "../images/test6.jpg"
+	f, err := os.Open(imagePath)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	d := nude.NewDetector(imagePath)
+	defer f.Close()
+
+	img, _, err := image.Decode(f)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	d := nude.NewDetector(img)
 	isNude, err := d.Parse()
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	fmt.Printf("isNude = %v\n", isNude)
 	fmt.Printf("%s\n", d)
 	drawImageAndRegions(imagePath, d.SkinRegions)
