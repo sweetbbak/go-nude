@@ -4,6 +4,16 @@ Nudity detection with Go.
 
 (Go porting from https://github.com/pa7/nude.js)
 
+continuation fork from ![koyachi/go-nude](github.com/koyachi/go-nude) as it seems to be abandoned and in need of modernizing
+
+differences in this version:
+
+- now uses the new go module system
+- adds convenience functions for nude detection from URLS and `io.Reader`
+- fixed formatting
+- fixes the example programs
+- allow for more flexibility in the example programs
+
 ## Example
 
 ```go
@@ -12,7 +22,8 @@ package main
 import (
 	"fmt"
 	"log"
-    "github.com/koyachi/go-nude"
+
+	"github.com/sweetbbak/go-nude"
 )
 
 func main() {
@@ -22,6 +33,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	fmt.Printf("isNude = %v\n", isNude)
 }
 
@@ -32,7 +44,6 @@ func main() {
 - [nude.js](http://www.patrick-wied.at/static/nudejs/)
 - [nude.rb](https://github.com/mitukiii/nude.rb)
 - [nude.py](https://github.com/hhatto/nude.py)
-
 
 ## Contributing
 
